@@ -8,7 +8,12 @@ import {
   WIN_LINES,
 } from '../types/game';
 
-export function createInitialState(gameMode: 'pvp' | 'ai'): GameState {
+import { AIDifficulty } from '../types/game';
+
+export function createInitialState(
+  gameMode: 'pvp' | 'ai',
+  aiDifficulty: AIDifficulty = 'medium'
+): GameState {
   return {
     board: createEmptyBoard(),
     currentPlayer: 'red',
@@ -16,6 +21,7 @@ export function createInitialState(gameMode: 'pvp' | 'ai'): GameState {
     blueQueue: [],
     winner: null,
     gameMode,
+    aiDifficulty,
     isThinking: false,
   };
 }
@@ -42,7 +48,7 @@ function cloneBoard(board: Board): Board {
 
 export function placePiece(state: GameState, pos: Position): GameState | null {
   // Validate: game not over and cell is empty
-  if (state.winner || state.isThinking) return null;
+  if (state.winner) return null;
   if (state.board[pos.row][pos.col] !== null) return null;
 
   const player = state.currentPlayer;
@@ -76,6 +82,7 @@ export function placePiece(state: GameState, pos: Position): GameState | null {
     blueQueue: player === 'blue' ? newQueue : state.blueQueue,
     winner,
     gameMode: state.gameMode,
+    aiDifficulty: state.aiDifficulty,
     isThinking: false,
   };
 }

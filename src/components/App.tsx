@@ -8,7 +8,8 @@ import ResetButton from './ResetButton';
 import '../styles/app.css';
 
 export default function App() {
-  const { state, placePiece, resetGame, setMode } = useGameState('pvp');
+  const { state, placePiece, resetGame, setMode, setDifficulty } =
+    useGameState('pvp');
 
   const isDisabled =
     state.isThinking || state.winner !== null;
@@ -23,7 +24,12 @@ export default function App() {
       <h1 className="app-title">Moon Chess</h1>
       <p className="app-subtitle">消失井字棋 · Vanishing Tic-Tac-Toe</p>
 
-      <ModeSelector currentMode={state.gameMode} onSelectMode={setMode} />
+      <ModeSelector
+        currentMode={state.gameMode}
+        currentDifficulty={state.aiDifficulty}
+        onSelectMode={setMode}
+        onSelectDifficulty={setDifficulty}
+      />
 
       <div className="game-area">
         <div className="players-row">

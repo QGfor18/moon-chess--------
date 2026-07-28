@@ -182,3 +182,19 @@ export function findMediumMove(state: GameState): Position | null {
 export function findHardMove(state: GameState): Position | null {
   return findBestMove(state, 8);
 }
+
+// Dispatch by difficulty
+export function findMoveByDifficulty(
+  state: GameState
+): Position | null {
+  switch (state.aiDifficulty) {
+    case 'easy':
+      return findRandomMove(state.board);
+    case 'medium':
+      return findMediumMove(state);
+    case 'hard':
+      return findHardMove(state);
+    default:
+      return findBestMove(state, 6);
+  }
+}

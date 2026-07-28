@@ -1,6 +1,7 @@
 export type Player = 'red' | 'blue';
 export type CellState = Player | null;
 export type Board = CellState[][];
+export type AIDifficulty = 'easy' | 'medium' | 'hard';
 
 export interface Position {
   row: number;
@@ -14,6 +15,7 @@ export interface GameState {
   blueQueue: Position[];
   winner: Player | null;
   gameMode: 'pvp' | 'ai';
+  aiDifficulty: AIDifficulty;
   isThinking: boolean;
 }
 

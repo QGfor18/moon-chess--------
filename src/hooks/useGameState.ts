@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { GameState } from '../types/game';
+import { AIDifficulty, GameState } from '../types/game';
 import { createInitialState, placePiece } from '../logic/gameEngine';
-import { findBestMove } from '../logic/ai';
+import { findMoveByDifficulty } from '../logic/ai';
 import { Position } from '../types/game';
 
 export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
@@ -36,7 +36,7 @@ export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
 
     const timer = setTimeout(() => {
       setState((prev) => {
-        const bestMove = findBestMove(prev, 7);
+        const bestMove = findMoveByDifficulty(prev);
         if (!bestMove) return { ...prev, isThinking: false };
 
         const next = placePiece(prev, bestMove);
@@ -48,11 +48,19 @@ export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
   }, [state.isThinking, state.winner]);
 
   const resetGame = useCallback(() => {
-    setState((prev) => createInitialState(prev.gameMode));
+    setState((prev) =>
+      createInitialState(prev.gameMode, prev.aiDifficulty)
+    );
   }, []);
 
   const setMode = useCallback((mode: 'pvp' | 'ai') => {
-    setState(createInitialState(mode));
+    setState((prev) => createInitialState(mode, prev.aiDifficulty));
+  }, []);
+
+  const setDifficulty = useCallback((difficulty: AIDifficulty) => {
+    setState((prev) =>
+      createInitialState(prev.gameMode, difficulty)
+    );
   }, []);
 
   return {
@@ -60,5 +68,6 @@ export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
     placePiece: handlePlacePiece,
     resetGame,
     setMode,
+    setDifficulty,
   };
 }

@@ -28,13 +28,20 @@
 /* ===== Mode Selector ===== */
 .mode-selector {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   background: #1e293b;
   border-radius: 12px;
-  padding: 4px;
+  padding: 6px;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .mode-btn {
+  flex: 1;
   padding: 0.5rem 1.2rem;
   border: none;
   border-radius: 10px;
@@ -54,6 +61,45 @@
   background: #334155;
   color: #f1f5f9;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Difficulty Selector ===== */
+.difficulty-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.5rem;
+  border-top: 1px solid #334155;
+}
+
+.difficulty-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-right: 0.2rem;
+}
+
+.difficulty-btn {
+  flex: 1;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  color: #64748b;
+}
+
+.difficulty-btn:hover {
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.difficulty-btn.active {
+  background: #475569;
+  border-color: #475569;
+  color: #f1f5f9;
 }
 
 /* ===== Game Area ===== */
