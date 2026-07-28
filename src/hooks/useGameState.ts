@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { AIDifficulty, GameState } from '../types/game';
+import { AIDifficulty, GameState, Player } from '../types/game';
 import { createInitialState, placePiece } from '../logic/gameEngine';
 import { findMoveByDifficulty } from '../logic/ai';
 import { Position } from '../types/game';
@@ -16,10 +16,11 @@ export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
         if (!next) return prev;
 
         // After player moves, if AI mode and game not over, trigger AI thinking
+        // AI plays when it's the turn of the side the player didn't choose
         if (
           next.gameMode === 'ai' &&
           !next.winner &&
-          next.currentPlayer === 'blue'
+          next.currentPlayer !== next.playerSide
         ) {
           return { ...next, isThinking: true };
         }
@@ -47,19 +48,37 @@ export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
     return () => clearTimeout(timer);
   }, [state.isThinking, state.winner]);
 
+  // When player selects blue side, AI (red) needs to move first
+  useEffect(() => {
+    if (
+      state.gameMode === 'ai' &&
+      !state.winner &&
+      !state.isThinking &&
+      state.currentPlayer !== state.playerSide
+    ) {
+      setState((prev) => ({ ...prev, isThinking: true }));
+    }
+  }, [state.gameMode, state.playerSide]);
+
   const resetGame = useCallback(() => {
     setState((prev) =>
-      createInitialState(prev.gameMode, prev.aiDifficulty)
+      createInitialState(prev.gameMode, prev.aiDifficulty, prev.playerSide)
     );
   }, []);
 
   const setMode = useCallback((mode: 'pvp' | 'ai') => {
-    setState((prev) => createInitialState(mode, prev.aiDifficulty));
+    setState((prev) => createInitialState(mode, prev.aiDifficulty, prev.playerSide));
   }, []);
 
   const setDifficulty = useCallback((difficulty: AIDifficulty) => {
     setState((prev) =>
-      createInitialState(prev.gameMode, difficulty)
+      createInitialState(prev.gameMode, difficulty, prev.playerSide)
+    );
+  }, []);
+
+  const setPlayerSide = useCallback((side: Player) => {
+    setState((prev) =>
+      createInitialState(prev.gameMode, prev.aiDifficulty, side)
     );
   }, []);
 
@@ -69,5 +88,6 @@ export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
     resetGame,
     setMode,
     setDifficulty,
+    setPlayerSide,
   };
 }

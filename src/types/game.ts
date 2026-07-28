@@ -17,6 +17,8 @@ export interface GameState {
   gameMode: 'pvp' | 'ai';
   aiDifficulty: AIDifficulty;
   isThinking: boolean;
+  /** 人机对战时玩家选择的阵营 */
+  playerSide: Player;
 }
 
 export interface WinLine {

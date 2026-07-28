@@ -102,6 +102,45 @@
   color: #f1f5f9;
 }
 
+/* ===== Side Selector ===== */
+.side-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.5rem;
+  border-top: 1px solid #334155;
+}
+
+.side-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-right: 0.2rem;
+}
+
+.side-btn {
+  flex: 1;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  color: #64748b;
+}
+
+.side-btn:hover {
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.side-btn.active {
+  background: #475569;
+  border-color: #475569;
+  color: #f1f5f9;
+}
+
 /* ===== Game Area ===== */
 .game-area {
   width: 100%;

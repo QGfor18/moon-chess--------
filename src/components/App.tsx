@@ -8,7 +8,7 @@ import ResetButton from './ResetButton';
 import '../styles/app.css';
 
 export default function App() {
-  const { state, placePiece, resetGame, setMode, setDifficulty } =
+  const { state, placePiece, resetGame, setMode, setDifficulty, setPlayerSide } =
     useGameState('pvp');
 
   const isDisabled =
@@ -27,8 +27,10 @@ export default function App() {
       <ModeSelector
         currentMode={state.gameMode}
         currentDifficulty={state.aiDifficulty}
+        currentPlayerSide={state.playerSide}
         onSelectMode={setMode}
         onSelectDifficulty={setDifficulty}
+        onSelectPlayerSide={setPlayerSide}
       />
 
       <div className="game-area">

@@ -12,7 +12,8 @@ import { AIDifficulty } from '../types/game';
 
 export function createInitialState(
   gameMode: 'pvp' | 'ai',
-  aiDifficulty: AIDifficulty = 'medium'
+  aiDifficulty: AIDifficulty = 'medium',
+  playerSide: Player = 'red'
 ): GameState {
   return {
     board: createEmptyBoard(),
@@ -23,6 +24,7 @@ export function createInitialState(
     gameMode,
     aiDifficulty,
     isThinking: false,
+    playerSide,
   };
 }
 
@@ -84,6 +86,7 @@ export function placePiece(state: GameState, pos: Position): GameState | null {
     gameMode: state.gameMode,
     aiDifficulty: state.aiDifficulty,
     isThinking: false,
+    playerSide: state.playerSide,
   };
 }
 
