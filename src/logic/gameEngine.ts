@@ -15,6 +15,8 @@ export function createInitialState(
   aiDifficulty: AIDifficulty = 'medium',
   playerSide: Player = 'red'
 ): GameState {
+  // 人机模式下，若玩家选了蓝方，则 AI（红方）需要先手落子
+  const aiGoesFirst = gameMode === 'ai' && playerSide !== 'red';
   return {
     board: createEmptyBoard(),
     currentPlayer: 'red',
@@ -23,7 +25,7 @@ export function createInitialState(
     winner: null,
     gameMode,
     aiDifficulty,
-    isThinking: false,
+    isThinking: aiGoesFirst,
     playerSide,
   };
 }

@@ -12,6 +12,14 @@ export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
   const handlePlacePiece = useCallback(
     (pos: Position) => {
       setState((prev) => {
+        // 人机模式下，AI 回合时不允许玩家替 AI 落子
+        if (
+          prev.gameMode === 'ai' &&
+          prev.currentPlayer !== prev.playerSide
+        ) {
+          return prev;
+        }
+
         const next = placePiece(prev, pos);
         if (!next) return prev;
 
@@ -47,18 +55,6 @@ export function useGameState(initialMode: 'pvp' | 'ai' = 'pvp') {
 
     return () => clearTimeout(timer);
   }, [state.isThinking, state.winner]);
-
-  // When player selects blue side, AI (red) needs to move first
-  useEffect(() => {
-    if (
-      state.gameMode === 'ai' &&
-      !state.winner &&
-      !state.isThinking &&
-      state.currentPlayer !== state.playerSide
-    ) {
-      setState((prev) => ({ ...prev, isThinking: true }));
-    }
-  }, [state.gameMode, state.playerSide]);
 
   const resetGame = useCallback(() => {
     setState((prev) =>
