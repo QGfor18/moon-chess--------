@@ -4,9 +4,32 @@ import {
   GameState,
   Player,
   Position,
+  posEqual,
   WIN_LINES,
 } from '../types/game';
 import { getAvailableMoves, getCellAt, placePiece } from './gameEngine';
+
+/**
+ * 模拟指定玩家在某个位置落子后是否能立即获胜（考虑 FIFO 队列）
+ */
+function canWinAt(state: GameState, pos: Position, player: Player): boolean {
+  const testState = { ...state, currentPlayer: player };
+  const next = placePiece(testState, pos);
+  return next?.winner === player;
+}
+
+/**
+ * 检测对手在当前棋盘上有哪些"两子连线+一空位"的威胁位置
+ * 返回对手下在此处就能获胜的位置列表
+ */
+function findOpponentWinThreats(
+  state: GameState,
+  aiPlayer: Player
+): Position[] {
+  const opponent: Player = aiPlayer === 'red' ? 'blue' : 'red';
+  const moves = getAvailableMoves(state.board);
+  return moves.filter((move) => canWinAt(state, move, opponent));
+}
 
 // Evaluate the board from the perspective of the given player
 function evaluate(state: GameState, aiPlayer: Player): number {
@@ -21,7 +44,7 @@ function evaluate(state: GameState, aiPlayer: Player): number {
   const oppQueue = aiPlayer === 'red' ? state.blueQueue : state.redQueue;
   const myQueue = aiPlayer === 'red' ? state.redQueue : state.blueQueue;
 
-  for (const line of WIN_LINES) {
+  WIN_LINES.forEach((line, lineIndex) => {
     const cells: CellState[] = line.cells.map((pos) => getCellAt(board, pos));
 
     const myCount = cells.filter((c) => c === aiPlayer).length;
@@ -48,20 +71,25 @@ function evaluate(state: GameState, aiPlayer: Player): number {
     }
 
     // If line has both players' pieces, it's blocked
-    if (myCount > 0 && oppCount > 0) continue;
+    if (myCount > 0 && oppCount > 0) return;
+
+    // 横竖线（索引 0-5）比对角线（索引 6-7）权重更高
+    // 横竖线是更常见、更危险的威胁方向
+    const isStraightLine = lineIndex < 6;
+    const lineMultiplier = isStraightLine ? 1.5 : 1.0;
 
     // Potential winning lines
     if (oppCount === 0) {
-      if (myCount === 2) score += 50 + myWeighted * 20;
-      else if (myCount === 1) score += 5 + myWeighted * 3;
+      if (myCount === 2) score += (50 + myWeighted * 20) * lineMultiplier;
+      else if (myCount === 1) score += (5 + myWeighted * 3) * lineMultiplier;
     }
 
-    // Defense: opponent threats
+    // Defense: opponent threats（防守权重已加强，横竖线再加 1.5×）
     if (myCount === 0) {
-      if (oppCount === 2) score -= 40 + oppWeighted * 15;
-      else if (oppCount === 1) score -= 3 + oppWeighted * 2;
+      if (oppCount === 2) score -= (80 + oppWeighted * 25) * lineMultiplier;
+      else if (oppCount === 1) score -= (5 + oppWeighted * 3) * lineMultiplier;
     }
-  }
+  });
 
   // Center control
   if (board[1][1] === aiPlayer) score += 8;
@@ -137,18 +165,40 @@ function minimax(
 
 export function findBestMove(state: GameState, depth: number = 7): Position | null {
   const aiPlayer = state.currentPlayer;
+  const opponent: Player = aiPlayer === 'red' ? 'blue' : 'red';
   const moves = getAvailableMoves(state.board);
 
   if (moves.length === 0) return null;
 
+  // ── 优先级 1：AI 能立即获胜 → 直接落子 ──
+  for (const move of moves) {
+    if (canWinAt(state, move, aiPlayer)) {
+      return move;
+    }
+  }
+
+  // ── 优先级 2：检测对手的即时获胜威胁（考虑 FIFO 队列）──
+  const opponentWinThreats = findOpponentWinThreats(state, aiPlayer);
+
+  if (opponentWinThreats.length === 1) {
+    // 单一威胁 → 必须堵
+    return opponentWinThreats[0];
+  }
+
+  // ── 优先级 3：多威胁 / 无立即威胁 → minimax 搜索 ──
   let bestScore = -Infinity;
   let bestMove = moves[0];
+
+  // 构建威胁位置集合，用于给堵棋加分
+  const threatKeySet = new Set(
+    opponentWinThreats.map((p) => `${p.row},${p.col}`)
+  );
 
   for (const move of moves) {
     const nextState = placePiece(state, move);
     if (!nextState) continue;
 
-    const score = minimax(
+    let score = minimax(
       nextState,
       depth - 1,
       -Infinity,
@@ -157,10 +207,20 @@ export function findBestMove(state: GameState, depth: number = 7): Position | nu
       aiPlayer
     );
 
+    // 堵住对手威胁位置给额外加分，确保在分数接近时优先堵棋
+    if (threatKeySet.has(`${move.row},${move.col}`)) {
+      score += 300;
+    }
+
     if (score > bestScore) {
       bestScore = score;
       bestMove = move;
     }
+  }
+
+  // 兜底：如果所有走法都导致失败且存在威胁位置，至少选一个威胁位置堵
+  if (bestScore <= -900 && opponentWinThreats.length > 0) {
+    bestMove = opponentWinThreats[0];
   }
 
   return bestMove;
