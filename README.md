@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+# 🌙 Moon Chess — 消失井字棋
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+基于 **React 19 + TypeScript + Vite** 构建的井字棋变体小游戏。
 
-## Available Scripts
+## 玩法介绍
 
-In the project directory, you can run:
+- 棋盘为 N×N（默认 3×3），双方轮流落子
+- 每方最多同时存在 **3 颗棋子**，落第 4 颗时最早的那颗会消失
+- 先达成三连一线者获胜
 
-### `npm start`
+## 如何运行
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+# 安装依赖
+npm install
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# 启动开发服务器
+npm run dev
 
-### `npm test`
+# 构建生产版本
+npm run build
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# 预览生产构建
+npm run preview
+```
 
-### `npm run build`
+## 技术栈
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| 技术 | 说明 |
+|------|------|
+| React 19 | 前端 UI 框架 |
+| TypeScript | 类型安全 |
+| Vite | 构建工具 |
+| CSS | 原生样式 |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 项目结构
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+src/
+├── components/   # UI 组件
+├── hooks/        # 自定义 Hooks
+├── logic/        # 游戏逻辑 & AI
+├── styles/       # 样式文件
+└── types/        # TypeScript 类型定义
+```
