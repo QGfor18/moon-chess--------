@@ -8,8 +8,16 @@ import ResetButton from './ResetButton';
 import '../styles/app.css';
 
 export default function App() {
-  const { state, placePiece, resetGame, setMode, setDifficulty, setPlayerSide } =
-    useGameState('pvp');
+  const {
+    state,
+    placePiece,
+    undoMove,
+    canUndo,
+    resetGame,
+    setMode,
+    setDifficulty,
+    setPlayerSide,
+  } = useGameState('pvp');
 
   const isDisabled =
     state.isThinking || state.winner !== null;
@@ -55,6 +63,14 @@ export default function App() {
               onCellClick={placePiece}
             />
             <div className="action-row">
+              <button
+                className="undo-btn"
+                onClick={undoMove}
+                disabled={!canUndo}
+                title="悔棋"
+              >
+                ↩ 悔棋
+              </button>
               <ResetButton
                 onClick={resetGame}
                 visible={state.winner !== null || true}

@@ -160,12 +160,6 @@
   gap: 0.8rem;
 }
 
-.action-row {
-  min-height: 2.5rem;
-  display: flex;
-  align-items: center;
-}
-
 /* ===== Game Status ===== */
 .game-status {
   text-align: center;
@@ -411,6 +405,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ===== Action Buttons ===== */
+.action-row {
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.undo-btn {
+  padding: 0.5rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.undo-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.undo-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 /* ===== Reset Button ===== */
